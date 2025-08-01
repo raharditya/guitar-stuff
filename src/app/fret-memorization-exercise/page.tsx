@@ -46,10 +46,13 @@ export default function NoteTrainer() {
     analyser.fftSize = 2048;
     source.connect(analyser);
 
+    const detector = PitchDetector.forFloat32Array(analyser.fftSize);
+    detector.minVolumeDecibels = -20;
+
     audioContextRef.current = audioCtx;
     analyserRef.current = analyser;
     sourceRef.current = source;
-    detectorRef.current = PitchDetector.forFloat32Array(analyser.fftSize);
+    detectorRef.current = detector;
 
     setListening(true);
   };
@@ -108,6 +111,7 @@ export default function NoteTrainer() {
           setElapsedTimes((prev) => [...prev, { note: targetNote, time: parseFloat(timeTaken) }]);
 
           setTargetNote(null);
+          setCurrenttNote(null);
 
           if (currentRound < TOTAL_ROUNDS) {
             runCountdown(() => {
@@ -155,9 +159,11 @@ export default function NoteTrainer() {
   return (
     <div style={{ padding: "2rem", textAlign: "center" }} className="bg-[#EFF1F7] min-h-screen space-y-6">
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-3xl">
-        <h1 className="font-bold text-2xl mb-4">🎸 Fret Memorization Exercise 🎸</h1>
-        <p className="mb-0 opacity-70">This exercise will help you memorize the notes on the fretboard.</p>
-        <p className="mb-4 opacity-70">
+        <h1 className="font-bold text-xl sm:text-2xl mb-4">🎸 Fret Memorization Exercise 🎸</h1>
+        <p className="mb-0 opacity-70 text-sm sm:text-base">
+          This exercise will help you memorize the notes on the fretboard.
+        </p>
+        <p className="mb-4 opacity-70 text-sm sm:text-base mt-2 sm:mt-0">
           Focus on a single string and play the note shown below as accurately as possible.
         </p>
       </div>
@@ -176,15 +182,15 @@ export default function NoteTrainer() {
         )}
 
         {isPlaying && !gameFinished && (
-          <div className="w-full">
-            <div className="flex justify-end w-full mb-4">
-              <h2 className="bg-[#343638] text-white px-4 py-2 rounded-full">
+          <div className="w-full relative">
+            <div className="flex justify-end w-full mb-4 absolute -right-2 -top-2">
+              <h2 className="bg-[#343638] text-white px-3 py-1 rounded-full">
                 <span className="font-semibold">{currentRound}</span> <span className="text-sm">/{TOTAL_ROUNDS}</span>
               </h2>
             </div>
 
             <div
-              className={`text-center -mt-10 mb-2 w-fit m-auto p-6 rounded-xl ${
+              className={`text-center my-4 w-fit m-auto p-6 rounded-xl ${
                 nextCountdown !== null ? "bg-green-200" : "bg-cyan-100"
               }`}
             >
@@ -217,7 +223,7 @@ export default function NoteTrainer() {
 
         {gameFinished && (
           <div className="w-full text-center flex flex-col items-center">
-            <h2 className="font-medium text-2xl mb-4">🎉 Exercise Complete!</h2>
+            <h2 className="font-semibold text-lg sm:text-2xl mb-0">🎉 Exercise Complete!</h2>
             <table className="w-full mt-4 border-collapse">
               <thead>
                 <tr>
