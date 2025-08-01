@@ -5,8 +5,8 @@ import { getNoteFromFrequency } from "@/lib/pitchUtils";
 import { FaArrowRotateLeft, FaArrowRight, FaCircleCheck } from "react-icons/fa6";
 
 const NOTES = ["A", "B", "C", "D", "E", "F", "G"];
-const SHARPS = ["A#", "C#", "D#", "F#", "G#"];
-const FLATS = ["Bb", "Db", "Eb", "Gb", "Ab"];
+const SHARPS = ["A♯", "C♯", "D♯", "F♯", "G♯"];
+const FLATS = ["B♭", "D♭", "E♭", "G♭", "A♭"];
 const TOTAL_ROUNDS = 20;
 
 export default function NoteTrainer() {
@@ -170,15 +170,57 @@ export default function NoteTrainer() {
 
       <div className="max-w-2xl mx-auto p-6 bg-white rounded-3xl flex justify-center">
         {!isPlaying && (
-          <button
-            onClick={startGame}
-            className="bg-[#343638] text-white px-3 py-3 w-48 flex items-center rounded-full hover:bg-[#4A4D52] transition-colors cursor-pointer"
-          >
-            <p className="flex-grow-1 font-semibold">Start</p>
-            <div className="flex items-center justify-center w-9 h-9 bg-white text-[#343638] rounded-full">
-              <FaArrowRight className="" />
+          <div className="flex flex-col md:flex-row gap-6 justify-between items-center w-full">
+            <div className="flex flex-col sm:flex-row items-center md:items-start sm:items-center gap-4">
+              <div
+                className={`border-1 px-3 py-4 w-52 md:w-auto rounded-2xl text-left cursor-pointer select-none ${
+                  userPreferences.includeInBetweens ? "bg-cyan-50 border-cyan-600" : "bg-gray-50 border-gray-300"
+                }`}
+                onClick={() =>
+                  setUserPreferences((prev) => ({ ...userPreferences, includeInBetweens: !prev.includeInBetweens }))
+                }
+              >
+                <div className="flex gap-3 items-center">
+                  <input
+                    type="checkbox"
+                    checked={userPreferences.includeInBetweens}
+                    onChange={(e) => setUserPreferences({ ...userPreferences, includeInBetweens: e.target.checked })}
+                  />
+                  <div>
+                    <label className="text-sm font-semibold">Enable Accidentals</label>
+                    <p className="text-xs mt-1 opacity-65 md:hidden">Examples: C♯, G♭, etc...</p>
+                  </div>
+                </div>
+                <p className="text-xs mt-1 opacity-65 hidden md:block">Examples: C♯, G♭, etc...</p>
+              </div>
+
+              <div
+                className={`border-1 px-3 py-4 w-52 md:w-auto rounded-2xl text-left cursor-pointer select-none ${
+                  userPreferences.useSharps ? "bg-purple-50 border-purple-300" : "bg-green-50 border-green-300"
+                }`}
+                onClick={() => setUserPreferences((prev) => ({ ...userPreferences, useSharps: !prev.useSharps }))}
+              >
+                <div className="flex gap-2 items-center ">
+                  <label className="text-sm font-semibold">
+                    Use {userPreferences.useSharps ? "sharps (C♯, D♯, etc...)" : "flats (B♭, D♭, etc...)"}
+                  </label>
+                </div>
+                <p className="text-xs mt-2 opacity-65">
+                  Identify notes using {userPreferences.useSharps ? "sharps" : "flats"}
+                </p>
+              </div>
             </div>
-          </button>
+
+            <button
+              onClick={startGame}
+              className="bg-[#343638] text-white px-3 py-3 w-48 flex items-center rounded-full hover:bg-[#4A4D52] transition-colors cursor-pointer"
+            >
+              <p className="flex-grow-1 font-semibold">Start</p>
+              <div className="flex items-center justify-center w-9 h-9 bg-white text-[#343638] rounded-full">
+                <FaArrowRight className="" />
+              </div>
+            </button>
+          </div>
         )}
 
         {isPlaying && !gameFinished && (
