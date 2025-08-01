@@ -102,7 +102,7 @@ export default function NoteTrainer() {
       const [freq, clarity] = pitchResult;
 
       if (clarity > 0.9 && freq) {
-        const detectedNote = getNoteFromFrequency(freq);
+        const detectedNote = getNoteFromFrequency(freq, userPreferences.useSharps);
         setCurrenttNote(detectedNote);
 
         if (detectedNote === targetNote) {
